@@ -1,0 +1,24 @@
+{% extends "locations/base.html" %}
+{% load static %}
+
+{% block title %} Deposit {% endblock %}
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/deposit.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
+
+{% endblock%}
+{% block content %}
+
+<p id="price"> Balance: 💳 £{{ customer.balance}}</p>
+
+  <div class="input-group">
+    <form  method="POST" >
+      {% csrf_token %}
+    <input type="text" class="form-control" placeholder="5.00" aria-describedby="basic-addon2" style="width:160px; height:25px;" name="depositAmount">
+    <button type="submit" name="deposit" id="deposit" value="none">Deposit</button>
+    </form>
+  </div>
+
+{% endblock %}
+
+

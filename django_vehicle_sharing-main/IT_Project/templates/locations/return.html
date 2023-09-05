@@ -1,0 +1,77 @@
+{% extends "locations/base.html" %}
+{% load static %}
+
+{% block title %} Return vehicle {% endblock %}
+
+{% block extrahead %}
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js">
+    </script>
+    <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
+    <link rel="stylesheet"
+    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
+    type="text/css">
+    
+    {% comment %} Needed to pass variables to the js script as js scripts do not have access to django objects {% endcomment %}
+    <script>  
+        var locations = [];
+        {% for loc in locations %}
+        locations.push({longitude: {{loc.longitude}}, latitude: {{loc.latitude}}, address:'{{loc.address}}', id:'{{loc.id}}'})
+        {% endfor %}  
+        username = '{{user.username}}'
+    
+        access_token = '{{ mapbox_access_token }}'
+
+        // Order variables
+        var datetimeString = "{{ initial_time }}";  // Get the datetime value from the Django object
+        order_id = {{ order_id}}
+        var cost_per_minute = {{ cost_per_minute}}
+        var cost_for_initial_order = {{cost_for_initial_order}} 
+
+        {% comment %} success_url = "{% url 'locations:order_history/1/details/' %}" {% endcomment %}
+        success_url = "{% url 'locations:order_history' %}"
+    </script>
+
+{% endblock %}
+
+{% block content %}
+    
+<h1> Return your vehicle at a nearby dedicated parking area </h1> 
+<p id="timer"></p>
+<p id="price"></p>
+
+
+<div id="map"></div>
+<div class="container">
+    {% comment %} Store variables from context here {% endcomment %}
+    
+<button id="search"> Find Nearest Parking Area </button> 
+    {% if user.is_authenticated %}
+    <button id="submit-button" >Return </button>
+    <!-- code for authenticated user -->
+    {% else %}
+        <h2> Register here! {{user.username}} </h2>
+        <!-- code for unauthenticated user -->
+    {% endif %}
+ </div>
+
+
+ <script type="text/javascript" src="{% static 'js/map_common.js' %}"></script>
+ <script type="text/javascript" src="{% static 'js/return_order.js' %}"></script>
+
+ {% endblock %}
+
+
+
+
+
+ 
+

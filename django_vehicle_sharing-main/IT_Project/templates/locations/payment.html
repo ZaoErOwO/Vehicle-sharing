@@ -1,0 +1,38 @@
+{% extends "locations/base.html" %}
+{% load static %}
+
+{% block title %} Payment {% endblock %}
+
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/payment.css' %}">
+
+
+{% endblock%}
+
+{% block content %}
+  <div class="content-wrapper">
+    <div class="payment-info">
+      <p>Your balance: ￡{{ balance }}</p>
+      <p>You need to pay: ￡{{ cost }}</p>
+      {% if balance < cost%}
+      <p> Insufficient credit </p>
+      {% endif%}
+    </div>
+    <div class="btn-wrapper">
+      <form  method="POST" >
+      {% csrf_token %}
+      <a class="btn btn-primary btn-xs" href="{% url 'locations:order_detail' nid=order.id %}">See details for order #{{order.id}}</a>
+      {% if balance < cost%}
+      <a class="btn btn-primary btn-xs" href="{% url 'locations:deposit' %}"> Top up!</a>
+      {% else %}
+      <button class="btn btn-primary btn-xs" type="submit" name="pay" id="pay" value="none">Pay now</button>
+      </form>
+
+
+      {% endif%}
+
+    </div>
+  </div>
+
+{% endblock %}

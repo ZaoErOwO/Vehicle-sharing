@@ -1,0 +1,85 @@
+{% extends "locations/base.html" %}
+{% load static %}
+
+{% block title %} Rent a vehicle {% endblock %}
+
+{% block extrahead %}
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css" rel="stylesheet">
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js">
+    </script>
+    <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
+    <link rel="stylesheet"
+    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css"
+    type="text/css">
+    
+    {% comment %} Store variables from context here {% endcomment %}
+    <script>  
+        var locations = [];
+        username = '{{user.username}}'
+        
+        var locations_with_bikes = [];
+        {% for loc in locations_with_bikes %}
+        locations_with_bikes.push({longitude: {{loc.longitude}}, latitude: {{loc.latitude}}, address:'{{loc.address}}', id:'{{loc.id}}'})
+        {% endfor %}  
+    
+        var locations_with_scooters = [];
+        {% for loc in locations_with_scooters %}
+        locations_with_scooters.push({longitude: {{loc.longitude}}, latitude: {{loc.latitude}}, address:'{{loc.address}}', id:'{{loc.id}}'})
+        {% endfor %}
+        
+        bike_cost = {{ bike.cost_per_minute_in_cent }}
+        bike_service_fee = {{bike.cost_for_initial_order}}
+        scooter_cost = {{ scooter.cost_per_minute_in_cent}}
+        scooter_service_fee = {{scooter.cost_for_initial_order}}
+        access_token = '{{ mapbox_access_token }}'
+        success_url = "{% url 'locations:return_order' %}"
+        login_url = "{% url 'auth_login' %}"
+    </script>
+
+{% endblock %}
+
+{% block content %}
+    
+    <h1> Select your desired vehicle 🚲/🛴 and rent a vehicle nearby 🗺️  </h1> 
+    <div class="vehicle-selection">
+        <img id="bike-icon" class="vehicle-icon" src="{% static 'images/bike.svg' %}" alt="Bike">
+        <div>
+            <p id = "service"> Service fee: $ </p>
+            <p id = "cost"> Cost per Minute: $ </p>
+        </div>
+        <img id="scooter-icon" class="vehicle-icon" src="{% static 'images/scooter.svg' %}" alt="Scooter">
+      </div>
+<div id="map"></div>
+<div class="container">
+    
+    <button id="search"> Find nearest vehicle</button> 
+    {% if user.is_authenticated %}
+    <button id="submit-button" onclick="createOrder()"> Start Renting</button>
+    {% else %}
+    <button id="submit-button" onclick="loginEvent()"> Login to rent! </button>
+    {% endif %}
+ </div>
+
+
+ {% comment %} <script type="text/javascript" src="{% static 'js/map_script.js' %}"></script> {% endcomment %}
+ <script type="text/javascript" src="{% static 'js/make_order.js' %}"></script>
+ <script type="text/javascript" src="{% static 'js/map_common.js' %}"></script>
+
+
+
+ {% endblock %}
+
+
+
+
+
+ 
+
